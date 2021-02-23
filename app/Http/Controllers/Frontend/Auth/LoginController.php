@@ -47,7 +47,7 @@ class LoginController extends Controller
             return redirect()->route('salepage.index');
         }else
         {
-            dd('hellofail');
+            return redirect()->back();
         }
     }
 

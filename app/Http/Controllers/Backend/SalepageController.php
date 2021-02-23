@@ -17,7 +17,7 @@ class SalepageController extends Controller
     public function index()
     {
         $data = CategorySell::where('username_id',Auth::user()->id)->get();
-        return view('frontend.created_salepage')
+        return view('Frontend.created_salepage')
         ->with('data',$data);
     }
 
@@ -64,7 +64,7 @@ class SalepageController extends Controller
         $image = Category_image::where('category_sale_id',$id)
         ->orderBy('sort','asc')
         ->get();
-        return view('frontend.main_salepage')
+        return view('Frontend.main_salepage')
         ->with('data',$data)
         ->with('image',$image)
         ->with('id',$id);
