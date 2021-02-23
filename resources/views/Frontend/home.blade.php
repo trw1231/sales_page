@@ -20,7 +20,7 @@ session_start();
   <link rel="icon" href="images/icons/favicon.ico">
   <meta name="description" content="">
   <meta name="keywords" content="">
-  <title>Salepages-Home-dev-branch</title>
+  <title>Salepages-Home-dev-branch-testedit</title>
   <script src="https://unpkg.com/feather-icons"></script>
 
   <!-- Bootstrap CSS -->
