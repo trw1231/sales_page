@@ -22,7 +22,7 @@
 </head>
 
 <body>
-    @include('frontend.side_menu')
+    @include('Frontend.side_menu')
 
     <input type="checkbox" id="menu">
 

@@ -60,7 +60,7 @@ while($row[] = $resultdata->fetch_assoc()) {
 
     </nav>
 
-    @include('frontend.side_menu')
+    @include('Frontend.side_menu')
     <form action = "{{route('salepage.store')}}" method = "POST">
         @csrf
         <div class="container-fluid">

@@ -19,7 +19,7 @@ class PersonalController extends Controller
         ->join('package','user_login.package_id','=','package.id')
         ->where('user_login.id',Auth::user()->id)
         ->first();
-        return view('frontend.personal')
+        return view('Frontend.personal')
         ->with('data',$data);
     }
 

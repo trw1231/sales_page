@@ -14,7 +14,7 @@ class PasswordResetController extends Controller
      */
     public function index()
     {
-        return view('frontend.changepassword');
+        return view('Frontend.changepassword');
     }
 
     /**

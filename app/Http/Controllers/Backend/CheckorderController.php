@@ -14,7 +14,7 @@ class CheckorderController extends Controller
      */
     public function index()
     {
-        return view('frontend.check_order');
+        return view('Frontend.check_order');
     }
 
     /**
@@ -46,7 +46,7 @@ class CheckorderController extends Controller
      */
     public function show($id)
     {
-        return view('frontend.order_page');
+        return view('Frontend.order_page');
     }
 
     /**

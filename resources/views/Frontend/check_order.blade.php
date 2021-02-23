@@ -42,7 +42,7 @@
 
     </nav>
 
-  @include('frontend.side_menu')
+  @include('Frontend.side_menu')
 
     <div class="container-fluid">
         <div class="content">
