@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Models\Category_image;
-use Hash;
-
-class ImageController extends Controller
+use DB;
+class ExpressController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -37,26 +35,41 @@ class ImageController extends Controller
      */
     public function store(Request $request,$id)
     {
-        $request->validate([
-            'image'=>'required',
-        ]);
+        if($request->method == 1)
+        {
+            DB::table('category_sale_express')
+            ->insert([
+                'category_sale_id' => $id,
+                'method' => $request->method,
+                'price1' => 0,
+                'price2' => 0,
+                'COD' => $request->COD,
+            ]);
 
-        $image = $request->file('image');
-        $imageName = time().rand().$image->getClientOriginalName();
-
-        $image->move('images/sales_page_image',$imageName);
-        $max_sort = Category_image::where('category_sale_id',$id)->max('sort');
-
-        Category_image::create([
-            'category_sale_id' => $id,
-            'content_type' => 'image',
-            'content' => $imageName,
-            'sort' => $max_sort+1,
-
-        ]);
-
+        }
+        elseif($request->method == 2)
+        {
+            DB::table('category_sale_express')
+                        ->insert([
+                            'category_sale_id' => $id,
+                            'method' => $request->method,
+                            'price1' => $request->price,
+                            'price2' => 0,
+                            'COD' => $request->COD,
+                        ]);
+        }
+        elseif($request->method == 3)
+        {
+            DB::table('category_sale_express')
+                        ->insert([
+                            'category_sale_id' => $id,
+                            'method' => $request->method,
+                            'price1' => $request->price1,
+                            'price2' => $request->price2,
+                            'COD' => $request->COD,
+                        ]);
+        }
         return redirect()->back();
-
     }
 
     /**
@@ -101,14 +114,6 @@ class ImageController extends Controller
      */
     public function destroy($id)
     {
-       
-        $destroy = Category_image::find($id);
-        if(file_exists('images/sales_page_image/'.$destroy->content.''))
-        {
-            @unlink('images/sales_page_image/'.$destroy->content.'');
-        }
-        $destroy->delete();
-
-        return redirect()->back();
+        //
     }
 }

@@ -50,7 +50,7 @@
             <h5 class="p-4">แพ็คเกจของคุณจะหมดอายุวันที่ ว/ด/ป (เหลืออีก 00 วัน)</h5>
         </div>
         <div class="text-center" style="font-size: 30px">
-            <h2>รายการสั่งซื้อของเพจ<br>"Test Page"</h2>
+            <h2>รายการสั่งซื้อของเพจ<br>"{{$data->namesale}}"</h2>
         </div>
         &nbsp;
         &nbsp;
@@ -114,201 +114,36 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach($transaction as $ts)
                         <tr class="text-center">
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td><span style="color:orange; font-size:14px;">เทส</span></td>
-                            <td><a href="#" onclick="" class="btn btn-secondary btn-sm">ดูรายละเอียด</a></td>
+                            <td>{{$loop->iteration}}</td>
+                            <td>{{$ts->name}}</td>
+                            <td>{{$ts->description}}</td>
+                            <td>{{$ts->price}}</td>
+                            <td>{{$ts->price}}</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>{{$ts->price}}</td>
+                            <td>
+                                @if($ts->payment_method == 1)
+                                <p>โอนเงิน</p>
+                                @else
+                                <p>เก็บเงินปลายทาง</p>
+                                @endif
+                            </td>
+                            <td>
+                                @if($ts->status == 0)
+                                <p>รอการยืนยัน</p>
+                                @else
+                                <p>ได้รับการยืนยัน</p>
+                                @endif
+                            </td>
+                            
+                            <td><a href="่"  class="btn btn-secondary btn-sm">ดูรายละเอียด</a></td>
                         </tr>
-                        <tr class="text-center">
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td><span style="color:orange; font-size:14px;">เทส</span></td>
-                            <td><a href="#" onclick="" class="btn btn-secondary btn-sm">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td><span style="color:orange; font-size:14px;">เทส</span></td>
-                            <td><a href="#" onclick="" class="btn btn-secondary btn-sm">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td><span style="color:orange; font-size:14px;">เทส</span></td>
-                            <td><a href="#" onclick="" class="btn btn-secondary btn-sm">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td><span style="color:orange; font-size:14px;">เทส</span></td>
-                            <td><a href="#" onclick="" class="btn btn-secondary btn-sm">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td><span style="color:orange; font-size:14px;">เทส</span></td>
-                            <td><a href="#" onclick="" class="btn btn-secondary btn-sm">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td><span style="color:orange; font-size:14px;">เทส</span></td>
-                            <td><a href="#" onclick="" class="btn btn-secondary btn-sm">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td><span style="color:orange; font-size:14px;">เทส</span></td>
-                            <td><a href="#" onclick="" class="btn btn-secondary btn-sm">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td><span style="color:orange; font-size:14px;">เทส</span></td>
-                            <td><a href="#" onclick="" class="btn btn-secondary btn-sm">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td><span style="color:orange; font-size:14px;">เทส</span></td>
-                            <td><a href="#" onclick="" class="btn btn-secondary btn-sm">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td><span style="color:orange; font-size:14px;">เทส</span></td>
-                            <td><a href="#" onclick="" class="btn btn-secondary btn-sm">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td><span style="color:orange; font-size:14px;">เทส</span></td>
-                            <td><a href="#" onclick="" class="btn btn-secondary btn-sm">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td><span style="color:orange; font-size:14px;">เทส</span></td>
-                            <td><a href="#" onclick="" class="btn btn-secondary btn-sm">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td><span style="color:orange; font-size:14px;">เทส</span></td>
-                            <td><a href="#" onclick="" class="btn btn-secondary btn-sm">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td>เทส</td>
-                            <td><span style="color:orange; font-size:14px;">เทส</span></td>
-                            <td><a href="#" onclick="" class="btn btn-secondary btn-sm">ดูรายละเอียด</a></td>
-                        </tr>
+                        @endforeach
+                        
+                     
                     </tbody>
                 </table>
             </div>

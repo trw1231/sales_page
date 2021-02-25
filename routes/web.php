@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-
+Route::get('salepage/{id}','Backend\SalepageController@show')->name('salepage.show');
+Route::post('salepage/{id}/storeOrder','Frontend\OrderController@store')->name('order.store');
 Route::group(['namespace' => 'Frontend'],function(){
 
     Auth::routes(['reset' => false]);
@@ -34,16 +35,28 @@ Route::group(['namespace' => 'Frontend'],function(){
 Route::group(['middleware' => 'auth','prefix' => 'webpanel'],function(){
     Route::get('created_salepage','Backend\SalepageController@index')->name('salepage.index');
     Route::post('created_salepage','Backend\SalepageController@store')->name('salepage.store');
-    Route::get('created_salepage/{id}','Backend\SalepageController@show')->name('salepage.show');
     Route::get('created_salepage/{id}/edit','Backend\SalepageController@edit')->name('salepage.edit');
     Route::post('created_salepage/{id}/update','Backend\SalepageController@update')->name('salepage.update');
+    Route::get('created_salepage/{id}/destroy','Backend\SalepageController@destroy')->name('salepage.destroy');
 
     Route::get('package_show','Backend\PackageController@index')->name('package.index');
+
+    Route::post('product/{id}/store','Backend\ProductController@store')->name('product.store');
+
+    Route::post('banking/{id}/store','Backend\BankController@store')->name('bank.store');
+
+    Route::post('express/{id}/store','Backend\ExpressController@store')->name('express.store');
+
+
+    Route::get('package_confirm/{id}','Backend\PackageController@confirm')->name('package.confirm');
+    Route::post('package_confirm/{id}/store','Backend\PackageController@storeTransaction')->name('package.storeTransaction');
 
     Route::post('image_upload/store/{id}','Backend\ImageController@store')->name('image.store');
     Route::post('image_upload/{id}/destroy','Backend\ImageController@destroy')->name('image.destroy');
 
     Route::post('article_upload/store/{id}','Backend\ArticleController@store')->name('article.store');
+
+    Route::post('video_upload/store/{id}','Backend\VideoController@store')->name('video.store');
 
     Route::get('personal','Backend\PersonalController@index')->name('personal.index');
     Route::post('personal/update/{id}','Backend\PersonalController@update')->name('personal.update');

@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Backend;
+namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Models\Category_image;
-use Hash;
+use DB;
 
-class ImageController extends Controller
+class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -37,25 +36,44 @@ class ImageController extends Controller
      */
     public function store(Request $request,$id)
     {
-        $request->validate([
-            'image'=>'required',
-        ]);
-
-        $image = $request->file('image');
-        $imageName = time().rand().$image->getClientOriginalName();
-
-        $image->move('images/sales_page_image',$imageName);
-        $max_sort = Category_image::where('category_sale_id',$id)->max('sort');
-
-        Category_image::create([
+       
+        
+        
+        DB::table('product_transaction')
+        ->insert([
             'category_sale_id' => $id,
-            'content_type' => 'image',
-            'content' => $imageName,
-            'sort' => $max_sort+1,
-
+            'name' => $request->name,
+            'tel' => $request->phone,
+            'social' => $request->social,
+            'payment_method' => $request->banking,
+            'address' => $request->address,
+            'status' => 0,
+            'price' => $request->summary_price,
         ]);
+        $last_id = DB::table('product_transaction')
+        ->where('category_sale_id',$id)
+        ->where('name',$request->name)
+        ->max('id');
 
-        return redirect()->back();
+        if($request->file)
+        {
+            $file = $request->file('file');
+            $fileName = time().rand().$file->getClientOriginalName();
+            $file->move('images/order_slip',$fileName);
+            DB::Table('product_transaction')
+            ->where('id',$last_id)
+            ->update([
+                'slip' => $fileName
+            ]);
+        }
+        foreach($request->product_checkbox as $pc)
+        {
+            DB::Table('product_transaction_detail')
+            ->insert([
+                'product_transaction_id' => $last_id,
+                'product_id' => $pc
+            ]);
+        }
 
     }
 
@@ -101,14 +119,6 @@ class ImageController extends Controller
      */
     public function destroy($id)
     {
-       
-        $destroy = Category_image::find($id);
-        if(file_exists('images/sales_page_image/'.$destroy->content.''))
-        {
-            @unlink('images/sales_page_image/'.$destroy->content.'');
-        }
-        $destroy->delete();
-
-        return redirect()->back();
+        //
     }
 }

@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use DB;
+use Auth;
 class CheckorderController extends Controller
 {
     /**
@@ -14,7 +15,11 @@ class CheckorderController extends Controller
      */
     public function index()
     {
-        return view('Frontend.check_order');
+        $salepage = DB::table('category_sale')
+        ->where('username_id',Auth::user()->id)
+        ->get();
+        return view('Frontend.check_order')
+        ->with('salepage',$salepage);
     }
 
     /**
@@ -46,7 +51,17 @@ class CheckorderController extends Controller
      */
     public function show($id)
     {
-        return view('Frontend.order_page');
+        $data = DB::table('category_sale')
+        ->where('id',$id)
+        ->first();
+        $transaction = DB::table('product_transaction')
+        ->join('product_transaction_detail','product_transaction.id','=','product_transaction_detail.product_transaction_id')
+        ->join('salepage_product','product_transaction_detail.product_id','=','salepage_product.id')
+        ->where('product_transaction.category_sale_id',$id)
+        ->get();
+        return view('Frontend.order_page')
+        ->with('transaction',$transaction)
+        ->with('data',$data);
     }
 
     /**

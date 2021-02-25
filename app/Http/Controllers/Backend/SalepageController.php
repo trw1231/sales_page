@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Models\CategorySell;
 use App\Http\Models\Category_image;
 use Auth;
+use DB;
+use Carbon\Carbon;
 class SalepageController extends Controller
 {
     /**
@@ -17,8 +19,29 @@ class SalepageController extends Controller
     public function index()
     {
         $data = CategorySell::where('username_id',Auth::user()->id)->get();
+        $package = DB::table('package_user')
+        ->where('user_id',Auth::user()->id)
+        ->join('package','package.id','package_user.package_id')
+        ->select('package.page_count','package_user.created_at')
+        ->first();
+        $page_count = $data->count();
+
+        $current_page = $package->page_count - $page_count;
+        
+        
+
+        $exp_date = Carbon::parse($package->created_at)->addMonth()->format('d-m-Y');
+        $datediff = Carbon::parse($package->created_at)->diffInDays(Carbon::parse($package->created_at)->addMonth());
+
+       
+       
+
         return view('Frontend.created_salepage')
-        ->with('data',$data);
+        ->with('data',$data)
+        ->with('package',$package)
+        ->with('exp_date',$exp_date)
+        ->with('datediff',$datediff)
+        ->with('current_page',$current_page);
     }
 
     /**
@@ -42,13 +65,33 @@ class SalepageController extends Controller
         $request->validate([
             'create' => 'required',
         ]);
-        CategorySell::create([
-            'username_id' => Auth::user()->id,
-            'name_id' => 0,
-            'namesale' => $request->create,
-        ]);
 
-        return redirect()->back();
+        $page_count = CategorySell::where('username_id',Auth::user()->id)->count();
+        $package = DB::table('package_user')
+        ->where('user_id',Auth::user()->id)
+        ->join('package','package.id','package_user.package_id')
+        ->select('package.page_count','package_user.created_at')
+        ->first();
+        
+        if($package->page_count - $page_count == 0)
+        {
+            return redirect()->back()->with('message', 'คุณสร้าง page เกินที่ package ดำหนดแล้ว');
+
+        }
+        else
+        {
+            CategorySell::create([
+                'username_id' => Auth::user()->id,
+                'name_id' => 0,
+                'namesale' => $request->create,
+            ]);
+            return redirect()->back();
+        }
+
+       
+       
+
+        
 
     }
 
@@ -64,10 +107,30 @@ class SalepageController extends Controller
         $image = Category_image::where('category_sale_id',$id)
         ->orderBy('sort','asc')
         ->get();
+
+        $product = DB::table('salepage_product')
+        ->where('category_sale_id',$id)
+        ->get();
+
+        $bank = DB::table('category_sale_bank')
+        ->where('category_sale_id',$id)
+        ->first();
+
+        $express = DB::table('category_sale_express')
+        ->where('category_sale_id',$id)
+        ->first();
+
+
+
+
+
         return view('Frontend.main_salepage')
         ->with('data',$data)
         ->with('image',$image)
-        ->with('id',$id);
+        ->with('id',$id)
+        ->with('product',$product)
+        ->with('bank',$bank)
+        ->with('express',$express);
     }
 
     /**
@@ -107,6 +170,10 @@ class SalepageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        
+        Category_image::where('category_sale_id',$id)->delete();
+        CategorySell::find($id)->delete();
+
+        return redirect()->back();
     }
 }

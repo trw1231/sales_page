@@ -60,6 +60,7 @@ while($row[] = $resultdata->fetch_assoc()) {
 
 
     </nav>
+    
 
     @include('Frontend.side_menu')
     <form action = "{{route('salepage.store')}}" method = "POST">
@@ -67,8 +68,15 @@ while($row[] = $resultdata->fetch_assoc()) {
         <div class="container-fluid">
             <div class="content">
                 <div class="">
-                    <h5 class="p-4">แพ็คเกจของคุณจะหมดอายุวันที่ ว/ด/ป (เหลืออีก 00 วัน)</h5>
+                    <h5 class="p-4">แพ็คเกจของคุณจะหมดอายุวันที่ {{$exp_date}} (เหลืออีก {{$datediff}} วัน)</h5>
                 </div>
+                @if (\Session::has('message'))
+                    <div class="alert alert-success">
+                        <ul>
+                            <li>{!! \Session::get('message') !!}</li>
+                        </ul>
+                    </div>
+                @endif
                 <div class="text-center" style="font-size: 30px">
                     <p>สร้าง sale page</p>
                 </div>
@@ -79,7 +87,7 @@ while($row[] = $resultdata->fetch_assoc()) {
                     <button type="submit" class="mt-4 mr-3 mb-4 btn" style="background-color: blue;color:aliceblue">Create Sale Page</button>
                 </div>
                 <div>
-                    <p class="p-4">คุณสามารถสร้าง sale page ได้อีก 00 หน้า</p>
+                    <p class="p-4">คุณสามารถสร้าง sale page ได้อีก {{$current_page}} หน้า</p>
                 </div>
                 <div class="table-responsive mt-1">
                     <table class="table table-striped">
@@ -95,7 +103,11 @@ while($row[] = $resultdata->fetch_assoc()) {
                                 <tr class="text-center">
                                     <td>{{$loop->iteration}}</td>
                                     <td><a href="{{route('salepage.show',$dt->id)}}">{{$dt->namesale}}</a></td>
-                                    <td><button type="button" class="btn btn-success" onclick="editModal({{$dt->id}})">แก้ไขข้อมูล</button></td>
+                                    <td>
+                                        <button type="button" class="btn btn-success" onclick="editModal({{$dt->id}})">แก้ไขข้อมูล</button>
+                                        <a type="button" class="btn btn-danger" onclick="return confirm('ยืนยันการลบ salepage ?')" href="{{route('salepage.destroy',$dt->id)}}">ลบ salepage</a>
+                                    </td>
+                                    
                                 </tr>
                                 @endforeach
                                

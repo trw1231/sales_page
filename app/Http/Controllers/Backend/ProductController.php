@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Models\Category_image;
-use Hash;
+use DB;
+use Auth;
 
-class ImageController extends Controller
+
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -38,21 +39,14 @@ class ImageController extends Controller
     public function store(Request $request,$id)
     {
         $request->validate([
-            'image'=>'required',
+            'description' => 'required',
+            'price' => 'required',
         ]);
-
-        $image = $request->file('image');
-        $imageName = time().rand().$image->getClientOriginalName();
-
-        $image->move('images/sales_page_image',$imageName);
-        $max_sort = Category_image::where('category_sale_id',$id)->max('sort');
-
-        Category_image::create([
+        DB::table('salepage_product')
+        ->insert([
             'category_sale_id' => $id,
-            'content_type' => 'image',
-            'content' => $imageName,
-            'sort' => $max_sort+1,
-
+            'description' => $request->description,
+            'price' => $request->price,
         ]);
 
         return redirect()->back();
@@ -101,14 +95,6 @@ class ImageController extends Controller
      */
     public function destroy($id)
     {
-       
-        $destroy = Category_image::find($id);
-        if(file_exists('images/sales_page_image/'.$destroy->content.''))
-        {
-            @unlink('images/sales_page_image/'.$destroy->content.'');
-        }
-        $destroy->delete();
-
-        return redirect()->back();
+        //
     }
 }

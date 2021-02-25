@@ -95,6 +95,7 @@ $app = new Image;
                         <p class="pt-3">{{$data->namesale}}</p>
                     </div>
                 </div>
+                @if(Auth::check())
                 <div class="dropdown text-right pt-3">
                     <button class="btn btn-secondary dropdown-toggle " type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         จัดการระบบของคุณ
@@ -131,10 +132,11 @@ $app = new Image;
                                 <!-- <a class="dropdown-item" href="#"></a> -->
                         </div>
                 </div>
+                @endif
             </div>
         </nav>
 
-
+        
         <!-- START myModal1 -->
         <div class="container">
             <div class="row">
@@ -302,18 +304,22 @@ $app = new Image;
                                             </h5>
                                         </div>
                                         <div id="collapseVideo" class="collapse" aria-labelledby="headingVideo" data-parent="#accordion">
-                                            <div class="card-body">
-                                                <p class="mb-3"></p>
-                                                <h3>เพิ่มวิดีโอ</h3>
-                                                <div class="mb-2">
-                                                    <input class="form-control" type="text" placeholder="Youtube or Facebook Video URL">
+                                            <form action="{{route('video.store',$id)}}" method="post">
+                                                @csrf
+                                                <div class="card-body">
+                                                    <p class="mb-3"></p>
+                                                    <h3>เพิ่มวิดีโอ</h3>
+                                                    <div class="mb-2">
+                                                        <input class="form-control" type="text" name="video" value="" placeholder="Youtube or Facebook Video URL">
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary" id="btnSaveVideo">
+                                                        <i class="fas fa-save"></i>
+                                                        บันทึก Video URL
+                                                    </button>
+                                                    <p class="mb-0">&nbsp;</p>
                                                 </div>
-                                                <button type="button" class="btn btn-primary" id="btnSaveVideo">
-                                                    <i class="fas fa-save"></i>
-                                                    บันทึก Video URL
-                                                </button>
-                                                <p class="mb-0">&nbsp;</p>
-                                            </div>
+                                            </form>
+                                            
                                         </div>
                                     </div>
                                     <!-- END UPLOAD VIDEO -->
@@ -705,31 +711,36 @@ $app = new Image;
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @foreach($product as $pd)
                                             <tr class="text-center">
-                                                <td>ยังไม่มีเนื้อหาใดๆ</td>
-                                                <td><a href="#"></a>ยังไม่มีเนื้อหาใดๆ</td>
-                                                <td>ยังไม่มีเนื้อหาใดๆ</td>
-                                                <td>ยังไม่มีเนื้อหาใดๆ</td>
+                                                <td>{{$loop->iteration}}</td>
+                                                <td><a href="#"></a>{{$pd->description}}</td>
+                                                <td>{{$pd->price}}</td>
+                                                <td><button class="btn btn-success">แก้ไข</button></td>
                                             </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
-
-                                    <h3>เพิ่มรายการสินค้า</h3>
-                                    <div class="mb-3 text-left">
-                                        <label>รายละเอียดสินค้า : </label>
-                                        <input class="form-control" type="text" placeholder="รายละเอียดสินค้า" id="txtProductDetail">
-                                    </div>
-                                    <div class="mb-2 text-left">
-                                        <label>ราคาสินค้า (บาท): </label>
-                                        <input class="form-control" type="number" placeholder="ราคาสินค้า (เฉพาะตัวเลข)" id="txtProductPrice" min="0" data-bind="value:replyNumber">
-                                    </div>
-                                    <p class="mb-0">&nbsp;</p>
-                                    <div class="text-center">
-                                        <button class="btn btn-success" href="#" data-dismiss="modal" id="BtnClosedAndPreview">
-                                            <i class="fas fa-eye"></i>
-                                            เพิ่มรายการสินค้า
-                                        </button>
-                                    </div>
+                                    <form action="{{route('product.store',$id)}}" method="post">
+                                        @csrf
+                                        <h3>เพิ่มรายการสินค้า</h3>
+                                        <div class="mb-3 text-left">
+                                            <label>รายละเอียดสินค้า : </label>
+                                            <input class="form-control" type="text" name="description" placeholder="รายละเอียดสินค้า" id="txtProductDetail">
+                                        </div>
+                                        <div class="mb-2 text-left">
+                                            <label>ราคาสินค้า (บาท): </label>
+                                            <input class="form-control" type="number" name="price" placeholder="ราคาสินค้า (เฉพาะตัวเลข)" id="txtProductPrice" min="0" data-bind="value:replyNumber">
+                                        </div>
+                                        <p class="mb-0">&nbsp;</p>
+                                        <div class="text-center">
+                                            <button class="btn btn-success">
+                                                <i class="fas fa-eye"></i>
+                                                เพิ่มรายการสินค้า
+                                            </button>
+                                        </div>
+                                    </form>
+                                  
                                     <p class="mb-0">&nbsp;</p>
                                     <div class="text-right">
                                         <button class="btn btn-success" href="#" data-dismiss="modal" id="BtnClosedProductModal">
@@ -764,100 +775,106 @@ $app = new Image;
                                                 จัดการค่าจัดส่งสินค้า
                                             </h2>
                                             <hr>
-                                            <div class="row">
-                                                <div class="col-2">
-                                                    <div class="toggle-btn" onclick="this.classList.toggle('active')">
-                                                        <div class="inner-circle"></div>
+                                            <form action="{{route('express.store',$id)}}" method="post">
+                                                @csrf
+                                                <input type="hidden" id="method" name="method" value="">
+                                                <div class="row">
+                                                    <div class="col-2">
+                                                        <div class="toggle-btn" data-id="1" >
+                                                            <div class="inner-circle"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-5 text-left ml-2">
+                                                        <label>ฟรีค่าจัดส่ง</label>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        &nbsp;
                                                     </div>
                                                 </div>
-                                                <div class="col-5 text-left ml-2">
-                                                    <label>ฟรีค่าจัดส่ง</label>
-                                                </div>
-                                                <div class="col-3">
-                                                    &nbsp;
-                                                </div>
-                                            </div>
-                                            <hr>
-                                            <div class="row">
-                                                <div class="col-2">
-                                                    <div class="toggle-btn" onclick="this.classList.toggle('active')">
-                                                        <div class="inner-circle"></div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col-2">
+                                                        <div class="toggle-btn" data-id="2" >
+                                                            <div class="inner-circle"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-5 text-left ml-2">
+                                                        คิดค่าจัดส่งด้วยอัตราเท่าๆกัน ในราคาชิ้นละ
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <input class="form-control" type="number" value="0" name="price" id="txt_shipping_fixed" min="0" data-bind="value:replyNumber">
+                                                    </div>
+                                                    <div class="col-1">
+                                                        บาท
                                                     </div>
                                                 </div>
-                                                <div class="col-5 text-left ml-2">
-                                                    คิดค่าจัดส่งด้วยอัตราเท่าๆกัน ในราคาชิ้นละ
-                                                </div>
-                                                <div class="col-3">
-                                                    <input class="form-control" type="number" value="0" id="txt_shipping_fixed" min="0" data-bind="value:replyNumber">
-                                                </div>
-                                                <div class="col-1">
-                                                    บาท
-                                                </div>
-                                            </div>
-                                            <hr>
-                                            <div class="row">
-                                                <div class="col-2">
-                                                    <div class="toggle-btn" onclick="this.classList.toggle('active')">
-                                                        <div class="inner-circle"></div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col-2">
+                                                        <div class="toggle-btn" data-id="3" >
+                                                            <div class="inner-circle"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-5 text-left ml-2">
+                                                        คิดค่าจัดส่งชิ้นแรก
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <input class="form-control" type="number" value="50" name="price1" id="txt_shipping_first_unit" min="0" data-bind="value:replyNumber">
+                                                    </div>
+                                                    <div class="col-1">
+                                                        บาท
                                                     </div>
                                                 </div>
-                                                <div class="col-5 text-left ml-2">
-                                                    คิดค่าจัดส่งชิ้นแรก
+                                                <div class="row">
+                                                    <div class="col-2">
+                                                        &nbsp;
+                                                    </div>
+                                                    <div class="col-5 text-left ml-2">
+                                                        คิดค่าจัดส่งชิ้นถัดไป
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <input class="form-control" type="number" value="0" name="price2" id="txt_shipping_next_unit" min="0" data-bind="value:replyNumber">
+                                                    </div>
+                                                    <div class="col-1">
+                                                        บาท
+                                                    </div>
                                                 </div>
-                                                <div class="col-3">
-                                                    <input class="form-control" type="number" value="50" id="txt_shipping_first_unit" min="0" data-bind="value:replyNumber">
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col-2">
+                                                        &nbsp;
+                                                    </div>
+                                                    <div class="col-5 text-left ml-2">
+                                                        เก็บเงินปลายทางบวกเพิ่ม
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <input class="form-control" type="number" value="0" name="COD" id="txt_shipping_next_unit" min="0" data-bind="value:replyNumber">
+                                                    </div>
+                                                    <div class="col-1">
+                                                        บาท
+                                                    </div>
                                                 </div>
-                                                <div class="col-1">
-                                                    บาท
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col-12 text-left ml-2">
+                                                        <label>
+                                                            <strong>*หมายเหตุ : </strong>
+                                                            จาก 3 ตัวเลือกด้านบน สามารถเปิด (on)
+                                                            ใช้งานได้เพียงรูปแบบใดรูปแบบหนึ่งเท่านั้น
+                                                        </label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-2">
-                                                    &nbsp;
+                                                <div class="text-right">
+                                                    <button class="btn btn-success" type="submit">
+                                                        <i class="fas fa-save">
+    
+                                                        </i>
+                                                        บันทึก
+                                                    </button>
                                                 </div>
-                                                <div class="col-5 text-left ml-2">
-                                                    คิดค่าจัดส่งชิ้นถัดไป
-                                                </div>
-                                                <div class="col-3">
-                                                    <input class="form-control" type="number" value="0" id="txt_shipping_next_unit" min="0" data-bind="value:replyNumber">
-                                                </div>
-                                                <div class="col-1">
-                                                    บาท
-                                                </div>
-                                            </div>
-                                            <hr>
-                                            <div class="row">
-                                                <div class="col-2">
-                                                    &nbsp;
-                                                </div>
-                                                <div class="col-5 text-left ml-2">
-                                                    เก็บเงินปลายทางบวกเพิ่ม
-                                                </div>
-                                                <div class="col-3">
-                                                    <input class="form-control" type="number" value="0" id="txt_shipping_next_unit" min="0" data-bind="value:replyNumber">
-                                                </div>
-                                                <div class="col-1">
-                                                    บาท
-                                                </div>
-                                            </div>
-                                            <hr>
-                                            <div class="row">
-                                                <div class="col-12 text-left ml-2">
-                                                    <label>
-                                                        <strong>*หมายเหตุ : </strong>
-                                                        จาก 3 ตัวเลือกด้านบน สามารถเปิด (on)
-                                                        ใช้งานได้เพียงรูปแบบใดรูปแบบหนึ่งเท่านั้น
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="text-right">
-                                                <button class="btn btn-success" href="#" data-dismiss="modal" id="BtnClosedProductModal">
-                                                    <i class="fas fa-save">
-
-                                                    </i>
-                                                    บันทึก
-                                                </button>
-                                            </div>
+                                            </form>
+                                            
+                                          
                                         </div>
                                     </div>
                                 </div>
@@ -1093,7 +1110,7 @@ $app = new Image;
                             <div class="modal-content">
                                 <div class="modal-header center">
                                     <div class="col-lg-12">
-                                        <h2>LINE TAG</h2>
+                                        <h2>บัญชี ธนาคาร</h2>
                                     </div>
                                     <table class="table table-striped">
                                         <thead class="thead-dark">
@@ -1107,48 +1124,52 @@ $app = new Image;
                                         </thead>
                                         <tbody>
                                             <tr class="text-center">
-                                                <td>ยังไม่มีเนื้อหาใดๆ</td>
-                                                <td><a href="#"></a>ยังไม่มีเนื้อหาใดๆ</td>
-                                                <td>ยังไม่มีเนื้อหาใดๆ</td>
-                                                <td>ยังไม่มีเนื้อหาใดๆ</td>
-                                                <td>ยังไม่มีเนื้อหาใดๆ</td>
+                                                <td>1</td>
+                                                <td><a href="#"></a>{{$bank->name}}</td>
+                                                <td>{{$bank->bank_name}}</td>
+                                                <td>{{$bank->bank_number}}</td>
+                                                <td><button class="btn btn-success">แก้ไข</button></td>
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <div class="mb-3 text-left">
-                                        <input class="form-control" type="text" placeholder="ซื่อบัญชี" id="txtProductDetail">
-                                    </div>
-                                    <p class="mb-0">&nbsp;</p>
-
-                                    <div class="mb-2">
-                                        <select class="browser-default custom-select" id="txtButtonType">
-                                            <option selected value="no">เลือกช่องทางการติดต่อ</option>
-                                            <option value="no">ธนาคารกรุงเทพ</option>
-                                            <option value="no">ธนาคารกสิกรไทย</option>
-                                            <option value="no">ธนาคารกรุงไทย</option>
-                                            <option value="no">ธนาคารทหารไทย</option>
-                                            <option value="no">ธนาคารไทยพาณิชย์</option>
-                                            <option value="no">ธนาคารกรุงศรีอยุธยา</option>
-                                            <option value="no">ธนาคารเกียรตินาคิน</option>
-                                            <option value="no">ธนาคารซีไอเอ็มบีไทย</option>
-                                            <option value="no">ธนาคารทิสโก้</option>
-                                            <option value="no">ธนาคารธนชาต</option>
-                                            <option value="no">ธนาคารญูโอบี</option>
-                                            <option value="no">ธนาคารออมสิน</option>
-                                        </select>
-                                    </div>
-
-
-                                    <div class="mb-3 text-left">
-                                        <input class="form-control" type="text" placeholder="เลขบัญชี" id="txtProductDetail">
-                                    </div>
-
-                                    <div class="text-right">
-                                        <button class="btn btn-success" href="#" data-dismiss="modal" id="BtnClosedProductModal">
-                                            <i class="fas fa-save">
-                                            </i>
-                                            บันทึก LINE Tag ID
-                                        </button>
+                                    <form action="{{route('bank.store',$id)}}" method="post">
+                                        @csrf
+                                        <div class="mb-3 text-left">
+                                            <input class="form-control" type="text" name="name" placeholder="ซื่อบัญชี" id="txtProductDetail">
+                                        </div>
+                                        <p class="mb-0">&nbsp;</p>
+    
+                                        <div class="mb-2">
+                                            <select class="browser-default custom-select" name="bank_name" id="txtButtonType">
+                                                <option selected value="no">เลือกช่องทางการติดต่อ</option>
+                                                <option value="ธนาคารกรุงเทพ">ธนาคารกรุงเทพ</option>
+                                                <option value="ธนาคารกสิกรไทย">ธนาคารกสิกรไทย</option>
+                                                <option value="ธนาคารกรุงไทย">ธนาคารกรุงไทย</option>
+                                                <option value="ธนาคารทหารไทย">ธนาคารทหารไทย</option>
+                                                <option value="ธนาคารไทยพาณิชย์">ธนาคารไทยพาณิชย์</option>
+                                                <option value="ธนาคารกรุงศรีอยุธยา">ธนาคารกรุงศรีอยุธยา</option>
+                                                <option value="ธนาคารเกียรตินาคิน">ธนาคารเกียรตินาคิน</option>
+                                                <option value="ธนาคารซีไอเอ็มบีไทย">ธนาคารซีไอเอ็มบีไทย</option>
+                                                <option value="ธนาคารทิสโก้">ธนาคารทิสโก้</option>
+                                                <option value="ธนาคารธนชาต">ธนาคารธนชาต</option>
+                                                <option value="ธนาคารญูโอบี">ธนาคารญูโอบี</option>
+                                                <option value="ธนาคารออมสิน">ธนาคารออมสิน</option>
+                                            </select>
+                                        </div>
+    
+    
+                                        <div class="mb-3 text-left">
+                                            <input class="form-control" type="text" name="bank_number" placeholder="เลขบัญชี" id="txtProductDetail">
+                                        </div>
+    
+                                        <div class="text-right">
+                                            <button class="btn btn-success" >
+                                                <i class="fas fa-save">
+                                                </i>
+                                                บันทึกข้อมูล
+                                            </button>
+                                    </form>
+                                    
                                     </div>
                                 </div>
                                 <p class="mb-0">&nbsp;</p>
@@ -1171,10 +1192,136 @@ $app = new Image;
                 <img src="/public/images/sales_page_image/{{$im->content}}" width="100%" heigh="auto">
                 @elseif($im->content_type == 'content')
                 <div>{!!$im->content!!}</div>
+                @elseif($im->content_type == 'video')
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="{{$im->content}}" allowfullscreen></iframe>
+                  </div>
                 @endif
               @endforeach
-          
+              
           </div>
+        </div>
+      </div>
+      <form method="post" action="{{route('order.store',$id)}}" enctype="multipart/form-data">
+        @csrf
+      <div class="row pt-4">
+        <div class="container">
+            <h1 class="text-center">สั่งซื้อสินค้า</h1>
+                <hr>
+                @foreach($product as $pd)
+                <div class="card mb-2">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-check my-2 mx-2">
+                                <input class="form-check-input product_checkbox" data-price="{{$pd->price}}" name="product_checkbox[]" type="checkbox" value="{{$pd->id}}" id="flexCheckDefault">
+                                
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <h5 class="my-2 mx-2">{{$pd->price}} บาท</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 my-2 ml-2">
+                            <h5>{{$pd->description}}</h5>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group my-2 mx-2">
+                                <input type="number" value="1" class="form-control" >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+
+            <div class="justify-content-end">
+                @if($express->method == 1)
+                <p>ฟรีค่าจัดส่ง</p>
+                <p>กรณีเก็บเงินปลายทาง มีค่าธรรมเนียมเพิ่ม {{$express->COD}} บาท</p>
+                @elseif($express->method == 2)
+                <p>ค่าจัดส่งเท่ากันในอัตราชิ้นละ {{$express->price1}}</p>
+                <p>กรณีเก็บเงินปลายทาง มีค่าธรรมเนียมเพิ่ม {{$express->COD}} บาท</p>
+                @elseif($express->method ==3)
+                <p>ค่าจัดส่งชิ้นแรก {{$express->price1}}</p>
+                <p>ค่าจัดส่งชิ้นถัดไป {{$express->price2}}</p>
+                <p>กรณีเก็บเงินปลายทาง มีค่าธรรมเนียมเพิ่ม {{$express->COD}} บาท</p>
+                @endif
+            </div>
+
+            <hr>
+            <div class="justify-content-end">
+               <h5>ค่าสินค้า <span id="product_price">0</span>  บาท</h5>
+               <h5>ค่าส่ง <span id="express_price">0</span> บาท</h5>
+               <h5>ยอดรวมส่ง <span id="sum_price">0</span>  บาท</h5>
+            </div>
+
+        </div>
+          
+        
+      </div>
+
+      <div class="row pt-4 pb-4">
+        <div class="container">
+            <h1 class="">กรอกชื่อที่อยู่ในการจัดส่ง</h1>
+                <hr>
+                
+                    <input type="hidden" name="summary_price" value="" id="summary_price">
+                    <div class="form-row">
+                      <div class="col-12 pt-2">
+                        <label for="name">ชื่อ - นามสกุล</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="" required>
+                      </div>
+                     
+                      <div class="col-12 pt-2">
+                        <label for="phone">เบอร์โทร</label>
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone number" value="" required>
+                      </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-12 pt-2">
+                          <label for="name">ชื่อเฟส,ไลน์ไอดี, หรืออีเมลล์ (กรอกเพียงอย่างใดอย่างหนึ่ง)</label>
+                          <input type="text" class="form-control" id="social" name="social" placeholder="Social" value="" required>
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <div class="col-12 pt-2">
+                          <label for="name">ที่อยู่ในการจัดส่ง</label>
+                          <textarea class="form-control" id="address" name="address" placeholder="Address" value="" required></textarea>
+                        </div>
+                        
+                      </div>
+
+                    <div class="pt-4">
+                        <h3>รูปแบบการชำระเงิน</h3>
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input type="radio" id="customRadioInline1" name="banking" value="1" class="custom-control-input method" checked>
+                            <label class="custom-control-label" for="customRadioInline1">แบบโอนเงิน</label>
+                          </div>
+                          <div class="custom-control custom-radio custom-control-inline">
+                            <input type="radio" id="customRadioInline2" name="banking" value="0" class="custom-control-input method">
+                            <label class="custom-control-label" for="customRadioInline2">แบบเก็บปลายทาง</label>
+                          </div>
+                    </div>
+
+                    <div class="pt-4 banking">
+                        <h3>ข้อมูลบัญชีธนาคาร</h3>
+                        <p><span class="font-weight-bold">ชื่อบัญชี</span> : {{$bank->name}}</p>
+                        <p><span class="font-weight-bold">ชื่อธนาคาร</span> : {{$bank->bank_name}}</p>
+                        <p><span class="font-weight-bold">เลขบัญชี</span> : {{$bank->bank_number}}</p>
+                    </div>
+                    <hr>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="file" id="customFile" required>
+                        <label class="custom-file-label"  for="customFile">Choose file</label>
+                      </div>
+                    <div class="text-center pt-3">
+                        <button class="btn btn-success text-center">ยืนยันคำสั่งซื้อ</button>
+                    </div>
+                      
+                   
+                      
+                    
+                  </form>
         </div>
       </div>
 
@@ -1206,6 +1353,56 @@ $app = new Image;
 </body>
 
 </html>
+
+<script>
+    let sumprice = 0;
+    $(document).on('click','.product_checkbox',function(){
+            var sum = [];
+            // $.each($("input[name='product_checkbox']:checked"), function(){
+            //     sum.push($(this).data('price'));
+            //     $('#sum_price').html(sumprice);
+            //     $('#product_price').html(sumprice);
+            // });
+            // alert("My favourite sports are: " + sum.join(", ")); 
+        if($(this).is(':checked'))
+        {
+            price = $(this).data('price');
+            sumprice = parseInt(sumprice)+parseInt(price);
+            $('#sum_price').html(sumprice);
+            $('#product_price').html(sumprice);
+        }
+        else
+        {
+            price = $(this).data('price');
+            sumprice = parseInt(sumprice)-parseInt(price);
+            $('#sum_price').html(sumprice);
+            $('#product_price').html(sumprice);
+        }
+        $('#summary_price').val(sumprice);
+      
+    })
+</script>
+
+<script>
+    $(document).on('click','.toggle-btn',function(){
+        let method = $(this).data('id');
+        $('#method').val(method);
+        this.classList.toggle('active');
+    })
+</script>
+
+<script>
+    $(document).on('click','.method',function(){
+        if($(this).val() == 1)
+        {
+            $('.banking').show();
+        }
+        else
+        {
+            $('.banking').hide();
+        }
+    })
+</script>
 
 <script>
     $('.custom-file-input').on('change', function(){

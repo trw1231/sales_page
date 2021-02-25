@@ -62,81 +62,13 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach($salepage as $sp)
                         <tr class="text-center">
-                            <td>1</td>
-                            <td><a href="#"></a>Test Page</td>
-                            <td><a target="_blank" href="{{route('checkorder.show',1)}}">คลิ๊ก</a></td>
+                            <td>{{$loop->iteration}}</td>
+                            <td><a href="#"></a>{{$sp->namesale}}</td>
+                            <td><a target="_blank" href="{{route('checkorder.show',$sp->id)}}">คลิ๊ก</a></td>
                         </tr>
-                        <tr class="text-center">
-                            <td>2</td>
-                            <td><a href="#"></a></td>
-                            <td></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>3</td>
-                            <td><a href="#"></a></td>
-                            <td></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>1</td>
-                            <td><a href="#"></a>ชื่อ Sale Page</td>
-                            <td><a target="_blank" href="#">คลิ๊ก</a></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>2</td>
-                            <td><a href="#"></a></td>
-                            <td></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>3</td>
-                            <td><a href="#"></a></td>
-                            <td></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>1</td>
-                            <td><a href="#"></a>ชื่อ Sale Page</td>
-                            <td><a target="_blank" href="#">คลิ๊ก</a></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>2</td>
-                            <td><a href="#"></a></td>
-                            <td></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>3</td>
-                            <td><a href="#"></a></td>
-                            <td></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>1</td>
-                            <td><a href="#"></a>ชื่อ Sale Page</td>
-                            <td><a target="_blank" href="#">คลิ๊ก</a></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>2</td>
-                            <td><a href="#"></a></td>
-                            <td></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>3</td>
-                            <td><a href="#"></a></td>
-                            <td></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>1</td>
-                            <td><a href="#"></a>ชื่อ Sale Page</td>
-                            <td><a target="_blank" href="#">คลิ๊ก</a></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>2</td>
-                            <td><a href="#"></a></td>
-                            <td></td>
-                        </tr>
-                        <tr class="text-center">
-                            <td>3</td>
-                            <td><a href="#"></a></td>
-                            <td></td>
-                        </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
