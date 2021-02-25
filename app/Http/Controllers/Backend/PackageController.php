@@ -43,6 +43,18 @@ class PackageController extends Controller
         }
         else
         {
+            DB::table('package_transaction')
+            ->insert([
+                'user_id' => Auth::user()->id,
+                'package_id' => $id,
+                'status' => 1,
+
+            ]);
+            DB::table('package_user')
+            ->insert([
+                'user_id' => Auth::user()->id,
+                'package_id' => $id,
+            ]);
             return view('Frontend.package-confirm')
             ->with('package',$package)
             ->with('id',$id);
