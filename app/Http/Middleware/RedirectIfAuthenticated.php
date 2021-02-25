@@ -19,6 +19,17 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
+            $checkPackage = \DB::table('package_user')
+            ->where('user_id',\Auth::user()->id)
+            ->first();
+            if($checkPackage)
+            {
+                return redirect()->route('salepage.index');
+            }
+            else
+            {
+                return redirect()->route('package.index');
+            }
             return redirect()->route('salepage.index');
         }
 

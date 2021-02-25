@@ -16,7 +16,8 @@ class PersonalController extends Controller
     public function index()
     {
         $data = DB::table('user_login')
-        ->join('package','user_login.package_id','=','package.id')
+        ->join('package_user','user_login.id','=','package_user.user_id')
+        ->join('package','package_user.package_id','=','package.id')
         ->where('user_login.id',Auth::user()->id)
         ->first();
         return view('Frontend.personal')

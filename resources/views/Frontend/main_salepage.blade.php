@@ -1123,6 +1123,7 @@ $app = new Image;
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @if($bank)
                                             <tr class="text-center">
                                                 <td>1</td>
                                                 <td><a href="#"></a>{{$bank->name}}</td>
@@ -1130,6 +1131,7 @@ $app = new Image;
                                                 <td>{{$bank->bank_number}}</td>
                                                 <td><button class="btn btn-success">แก้ไข</button></td>
                                             </tr>
+                                            @endif
                                         </tbody>
                                     </table>
                                     <form action="{{route('bank.store',$id)}}" method="post">
@@ -1233,7 +1235,7 @@ $app = new Image;
                     </div>
                 </div>
             @endforeach
-
+            @if($express)
             <div class="justify-content-end">
                 @if($express->method == 1)
                 <p>ฟรีค่าจัดส่ง</p>
@@ -1247,6 +1249,7 @@ $app = new Image;
                 <p>กรณีเก็บเงินปลายทาง มีค่าธรรมเนียมเพิ่ม {{$express->COD}} บาท</p>
                 @endif
             </div>
+            @endif
 
             <hr>
             <div class="justify-content-end">
@@ -1302,13 +1305,14 @@ $app = new Image;
                             <label class="custom-control-label" for="customRadioInline2">แบบเก็บปลายทาง</label>
                           </div>
                     </div>
-
+                    @if($bank)
                     <div class="pt-4 banking">
                         <h3>ข้อมูลบัญชีธนาคาร</h3>
                         <p><span class="font-weight-bold">ชื่อบัญชี</span> : {{$bank->name}}</p>
                         <p><span class="font-weight-bold">ชื่อธนาคาร</span> : {{$bank->bank_name}}</p>
                         <p><span class="font-weight-bold">เลขบัญชี</span> : {{$bank->bank_number}}</p>
                     </div>
+                    @endif
                     <hr>
                     <div class="custom-file">
                         <input type="file" class="custom-file-input" name="file" id="customFile" required>
