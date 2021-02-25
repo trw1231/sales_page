@@ -77,6 +77,10 @@ $app = new Image;
             text-align: center;
             display: block;
         }
+        .image-editor img{
+            max-width: 100%;
+            height : auto;
+        }
     </style>
 
 </head>
@@ -163,8 +167,14 @@ $app = new Image;
                                                     @endforeach
                                                   </select>
                                             </td>
-                                            <td><a href="#"></a>รูปภาพ</td>
-                                            <td><img src="/public/images/sales_page_image/{{$im->image_name}}" width="20%"></td>
+                                            <td><a href="#"></a>{{$im->content_type}}</td>
+                                            <td>
+                                                @if($im->content_type == 'image')
+                                                <img src="/public/images/sales_page_image/{{$im->content}}" width="20%">
+                                                @elseif($im->content_type == 'content')
+                                                <div class="image-editor">{!!$im->content!!}</div>
+                                                @endif
+                                            </td>
                                             <td>
                                                 <form action="{{route('image.destroy',$im->id)}}" method="post">
                                                     @csrf
@@ -317,18 +327,22 @@ $app = new Image;
                                                 </button>
                                             </h5>
                                         </div>
-                                        <div id="collapseArticle" class="collapse" aria-labelledby="headingArticle" data-parent="#accordion">
-                                            <p class="mb-0">&nbsp;</p>
-                                            <div class="container">
-                                                <textarea name="content"></textarea>
+                                        <form action="{{route('article.store',$id)}}" method="post">
+                                            @csrf
+                                            <div id="collapseArticle" class="collapse" aria-labelledby="headingArticle" data-parent="#accordion">
+                                                <p class="mb-0">&nbsp;</p>
+                                                <div class="container">
+                                                    <textarea name="content"></textarea>
+                                                </div>
+                                                <p class="mb-0">&nbsp;</p>
+                                                <button type="submit" class="btn btn-primary" id="btnSaveArticle">
+                                                    <i class="fas fa-save"></i>
+                                                    บันทึกบทความ
+                                                </button>
+                                                <p class="mb-0">&nbsp;</p>
                                             </div>
-                                            <p class="mb-0">&nbsp;</p>
-                                            <button type="button" class="btn btn-primary" id="btnSaveArticle">
-                                                <i class="fas fa-save"></i>
-                                                บันทึกบทความ
-                                            </button>
-                                            <p class="mb-0">&nbsp;</p>
-                                        </div>
+                                        </form>
+                                       
                                     </div>
                                     <!-- END ADD ARTICLE -->
 
@@ -1153,7 +1167,11 @@ $app = new Image;
         <div class="col text-center mx-0 px-0">
           <div class="img">
               @foreach($image as $im)
-                <img src="/public/images/sales_page_image/{{$im->image_name}}" width="100%" heigh="auto">
+              @if($im->content_type == 'image')
+                <img src="/public/images/sales_page_image/{{$im->content}}" width="100%" heigh="auto">
+                @elseif($im->content_type == 'content')
+                <div>{!!$im->content!!}</div>
+                @endif
               @endforeach
           
           </div>

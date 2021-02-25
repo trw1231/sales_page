@@ -44,7 +44,18 @@ class LoginController extends Controller
     protected function attemptLogin(Request $request)
     {
         if (\Auth::attempt(['username_login' => $request->username_login, 'password_login' => $request->password_login])) {
-            return redirect()->route('salepage.index');
+            $checkPackage = \DB::table('package_user')
+            ->where('user_id',\Auth::user()->id)
+            ->first();
+            if($checkPackage)
+            {
+                return redirect()->route('salepage.index');
+            }
+            else
+            {
+                return redirect()->route('package.index');
+            }
+            
         }else
         {
             return redirect()->back();

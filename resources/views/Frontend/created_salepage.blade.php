@@ -15,11 +15,12 @@ while($row[] = $resultdata->fetch_assoc()) {
 <html lang="en">
 
 <head>
+    <base href="{{asset('public')}}">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <script src="https://kit.fontawesome.com/yourcode.js"></script>
-    <base href="{{asset('')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link href="https://fonts.googleapis.com/css?family=Karla:400,700&display=swap" rel="stylesheet">
@@ -94,7 +95,7 @@ while($row[] = $resultdata->fetch_assoc()) {
                                 <tr class="text-center">
                                     <td>{{$loop->iteration}}</td>
                                     <td><a href="{{route('salepage.show',$dt->id)}}">{{$dt->namesale}}</a></td>
-                                    
+                                    <td><button type="button" class="btn btn-success" onclick="editModal({{$dt->id}})">แก้ไขข้อมูล</button></td>
                                 </tr>
                                 @endforeach
                                
@@ -104,6 +105,26 @@ while($row[] = $resultdata->fetch_assoc()) {
             </div>
         </div>
     </form>
+
+    <!-- Modal แก้ไข salespage-->
+<div class="modal fade" id="editSalePage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">แก้ไข sales page</h5>
+          
+        </div>
+        <div class="modal-body">
+          <input class="form-control" type="text" id="salepageName" value="">
+          <input type="hidden" id="salepageID" value="">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" id="updateSalepage" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
     
 
 
@@ -136,13 +157,44 @@ while($row[] = $resultdata->fetch_assoc()) {
     </div>
     <!-- END myModal1 HOW TO USE -->
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script src="js/bootstrap.min.js"></script>
     <script src="https://kit.fontawesome.com/yourcode.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+        function editModal(id)
+        {
+            let salepageId = id;
+            $.ajax({
+                "url" : "webpanel/created_salepage/"+salepageId+"/edit",
+                "method" : "get",
+                
+                success:function(response)
+                {
+
+                    $('#salepageName').val(response.namesale);
+                    $('#salepageID').val(id);
+                    $('#editSalePage').modal('show');
+
+                }
+            })
+        }
+        $(document).on('click','#updateSalepage',function(){
+            var salepageId = $('#salepageID').val();
+            var namesale = $('#salepageName').val();
+            $.ajax({
+                "url" : "webpanel/created_salepage/"+salepageId+"/update",
+                "method" : "post",
+                "data" : {"_token":"{{csrf_token()}}","namesale":namesale},
+                "success" : function(){
+                    window.location.reload();
+                }
+            })
+        });
+    </script>
 
 </body>
 

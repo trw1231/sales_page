@@ -35,9 +35,15 @@ Route::group(['middleware' => 'auth','prefix' => 'webpanel'],function(){
     Route::get('created_salepage','Backend\SalepageController@index')->name('salepage.index');
     Route::post('created_salepage','Backend\SalepageController@store')->name('salepage.store');
     Route::get('created_salepage/{id}','Backend\SalepageController@show')->name('salepage.show');
+    Route::get('created_salepage/{id}/edit','Backend\SalepageController@edit')->name('salepage.edit');
+    Route::post('created_salepage/{id}/update','Backend\SalepageController@update')->name('salepage.update');
+
+    Route::get('package_show','Backend\PackageController@index')->name('package.index');
 
     Route::post('image_upload/store/{id}','Backend\ImageController@store')->name('image.store');
     Route::post('image_upload/{id}/destroy','Backend\ImageController@destroy')->name('image.destroy');
+
+    Route::post('article_upload/store/{id}','Backend\ArticleController@store')->name('article.store');
 
     Route::get('personal','Backend\PersonalController@index')->name('personal.index');
     Route::post('personal/update/{id}','Backend\PersonalController@update')->name('personal.update');

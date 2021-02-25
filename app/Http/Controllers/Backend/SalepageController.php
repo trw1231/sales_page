@@ -78,7 +78,10 @@ class SalepageController extends Controller
      */
     public function edit($id)
     {
-        //
+       
+        $salepage = CategorySell::find($id);
+
+        return $salepage;
     }
 
     /**
@@ -90,7 +93,10 @@ class SalepageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $update = CategorySell::find($id);
+        $update->namesale = $request->namesale;
+        $update->save();
+        return true;
     }
 
     /**
