@@ -1229,7 +1229,7 @@ $app = new Image;
                         </div>
                         <div class="col-6">
                             <div class="form-group my-2 mx-2">
-                                <input type="number" value="1" class="form-control" >
+                                <input type="number" value="1"  class="form-control product_count" >
                             </div>
                         </div>
                     </div>
@@ -1315,7 +1315,7 @@ $app = new Image;
                     @endif
                     <hr>
                     <div class="custom-file">
-                        <input type="file" class="custom-file-input" name="file" id="customFile" required>
+                        <input type="file" class="custom-file-input" name="file" id="customFile">
                         <label class="custom-file-label"  for="customFile">Choose file</label>
                       </div>
                     <div class="text-center pt-3">
@@ -1362,6 +1362,11 @@ $app = new Image;
     let sumprice = 0;
     $(document).on('click','.product_checkbox',function(){
             var sum = [];
+            let test = $(this).closest('.row');
+            
+
+            console.log(test);
+
             // $.each($("input[name='product_checkbox']:checked"), function(){
             //     sum.push($(this).data('price'));
             //     $('#sum_price').html(sumprice);
