@@ -17,6 +17,56 @@
         body {
             font-family: 'Kanit', sans-serif;
         }
+
+        /*Profile Pic Start*/
+.picture-container{
+    position: relative;
+    cursor: pointer;
+    text-align: center;
+}
+.picture{
+    max-width: 150px;
+    height: 150px;
+    background-color: #999999;
+    border: 4px solid #CCCCCC;
+    color: #FFFFFF;
+    border-radius: 50%;
+    margin: 0px auto;
+    overflow: hidden;
+    transition: all 0.2s;
+    -webkit-transition: all 0.2s;
+}
+.picture:hover{
+    border-color: #2ca8ff;
+}
+.content.ct-wizard-green .picture:hover{
+    border-color: #05ae0e;
+}
+.content.ct-wizard-blue .picture:hover{
+    border-color: #3472f7;
+}
+.content.ct-wizard-orange .picture:hover{
+    border-color: #ff9500;
+}
+.content.ct-wizard-red .picture:hover{
+    border-color: #ff3b30;
+}
+.picture input[type="file"] {
+    cursor: pointer;
+    display: block;
+    height: 100%;
+    left: 0;
+    opacity: 0 !important;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.picture-src{
+    width: 100%;
+    height:100%;
+}
+/*Profile Pic End*/
     </style>
     <title>Document</title>
 </head>
@@ -27,10 +77,16 @@
     <input type="checkbox" id="menu">
 
     <nav>
-        <label class="head">Created</label>
+        <label class="head">Sale Page</label>
 
         <ul>
-            <li><a href="home.php" style="text-decoration: none;">Logout</a></li>
+            <li>
+                <form action="{{route('logout')}}" method="post">
+                    @csrf
+                    <button class="btn btn-primary">Logout</button>
+                </form>
+               
+            </li>
         </ul>
 
         <label for="menu" class="menu-bar">
@@ -50,8 +106,21 @@
             </div>
             <div class="container-fluid">
                 <p class="text-center" style="font-size: 30px">ข้อมูลส่วนตัว</p>
-                <form action="{{route('personal.update',Auth::user()->id)}}" method="post">
+                <form action="{{route('personal.update',Auth::user()->id)}}" method="post" enctype="multipart/form-data">
                     @csrf
+                    <div class="picture-container">
+                        <div class="picture">
+                            @if(Auth::user()->image)
+                            <img src="/assets/images/profile/{{Auth::user()->image}}" class="picture-src" id="wizardPicturePreview" title="">
+                            @else
+                            <img src="https://lh3.googleusercontent.com/LfmMVU71g-HKXTCP_QWlDOemmWg4Dn1rJjxeEsZKMNaQprgunDTtEuzmcwUBgupKQVTuP0vczT9bH32ywaF7h68mF-osUSBAeM6MxyhvJhG6HKZMTYjgEv3WkWCfLB7czfODidNQPdja99HMb4qhCY1uFS8X0OQOVGeuhdHy8ln7eyr-6MnkCcy64wl6S_S6ep9j7aJIIopZ9wxk7Iqm-gFjmBtg6KJVkBD0IA6BnS-XlIVpbqL5LYi62elCrbDgiaD6Oe8uluucbYeL1i9kgr4c1b_NBSNe6zFwj7vrju4Zdbax-GPHmiuirf2h86eKdRl7A5h8PXGrCDNIYMID-J7_KuHKqaM-I7W5yI00QDpG9x5q5xOQMgCy1bbu3St1paqt9KHrvNS_SCx-QJgBTOIWW6T0DHVlvV_9YF5UZpN7aV5a79xvN1Gdrc7spvSs82v6gta8AJHCgzNSWQw5QUR8EN_-cTPF6S-vifLa2KtRdRAV7q-CQvhMrbBCaEYY73bQcPZFd9XE7HIbHXwXYA=s200-no" class="picture-src" id="wizardPicturePreview" title="">
+                            @endif
+
+                            <input type="file" id="wizard-picture" name="profile" class="">
+                        </div>
+                         <h6 class="">Choose Picture</h6>
+                
+                    </div>
                     <div class="row">
                         <div class="col-3">&nbsp;</div>
                         <div class="col-6">
@@ -68,14 +137,15 @@
                         </div>
                     </div>
                     &nbsp;
-                    {{-- <div class="row">
+                    <div class="row">
                         <div class="col-3">&nbsp;</div>
                         <div class="col-6">
                             <label style="color: #696969;">อีเมลล์ของคุณ</label>
                             <input type="text" value="{{$data->username_login}}" class="p-2" style="width:90%;border: 1px solid #d1d3e2;border-radius: .35rem;" name="txt_page_email" id="txt_page_email">
                         </div>
-                    </div> --}}
+                    </div>
                     &nbsp;
+                    @if(!Auth::user()->is_admin)
                     <div class="row">
                         <div class="col-3">&nbsp;</div>
                         <div class="col-6">
@@ -84,6 +154,16 @@
     
                         </div>
                     </div>
+                    @else
+                    <div class="row">
+                        <div class="col-3">&nbsp;</div>
+                        <div class="col-6">
+                            <label style="color: #696969;">แพ็คเกจปัจจุบันของคุณคือ</label>
+                            <input type="text" class="p-2" value="" style=" background-color:#DCDCDC; color:#808080; width:90%;border: 1px solid #d1d3e2;border-radius: .35rem;" name="txt_page_package" id="txt_page_package" readonly>
+    
+                        </div>
+                    </div>
+                    @endif
                     <div class="text-center">
                         <button class="mt-4 mr-3 mb-4 btn" style="background-color: blue;color:aliceblue">อัพเดทข้อมูลส่วนตัว</button>
                     </div>
@@ -130,7 +210,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+// Prepare the preview for profile picture
+    $("#wizard-picture").change(function(){
+        readURL(this);
+    });
+});
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
 
+        reader.onload = function (e) {
+            $('#wizardPicturePreview').attr('src', e.target.result).fadeIn('slow');
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+    </script>
 
 </body>
 

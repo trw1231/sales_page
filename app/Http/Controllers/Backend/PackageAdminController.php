@@ -4,34 +4,44 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use DB;
 use Auth;
-class PersonalController extends Controller
+use DB;
+
+class PackageAdminController extends Controller
 {
+
+    public function __construct()
+    {
+       
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+
+    
     public function index()
     {
-        if(!Auth::user()->is_admin)
-        {
-            $data = DB::table('user_login')
-            ->join('package_user','user_login.id','=','package_user.user_id')
-            ->join('package','package_user.package_id','=','package.id')
-            ->where('user_login.id',Auth::user()->id)
-            ->first();
-        }
-        else
-        {
-            $data = DB::table('user_login')
-            ->where('user_login.id',Auth::user()->id)
-            ->first(); 
-        }
-       
-        return view('Frontend.personal')
-        ->with('data',$data);
+        $order = DB::table('package_transaction')
+        ->join('user_login','package_transaction.user_id','=','user_login.id')
+        ->join('package','package_transaction.package_id','=','package.id')
+        ->select('*',
+                 'package_transaction.created_at as package_created_at','package_transaction.id as package_id')
+        ->get();
+
+
+        return view('Backend.admin_order.order_index')
+        ->with('order',$order);
+    }
+
+    public function approve_package($id)
+    {
+        DB::table('package_transaction')
+        ->update([
+            'status' => 1
+        ]);
+        return redirect()->back()->with('message','อัพเดทออเดอร์แล้ว');
     }
 
     /**
@@ -63,7 +73,7 @@ class PersonalController extends Controller
      */
     public function show($id)
     {
-        //
+        dd($id);
     }
 
     /**
@@ -86,26 +96,7 @@ class PersonalController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
-        DB::table('user_login')
-        ->where('id',$id)
-        ->update([
-            'name_lastname' => $request->txt_page_name,
-            'phone_number' => $request->txt_page_phone,
-        ]);
-
-        if($request->profile)
-        {
-            $image = $request->profile;
-            $imageName = time().rand().$image->getClientOriginalName();
-            $image->move('assets/images/profile',$imageName);
-            DB::table('user_login')
-            ->where('id',$id)
-            ->update([
-                'image' => $imageName,
-            ]);
-        }
-        return redirect()->back();
+        //
     }
 
     /**

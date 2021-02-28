@@ -47,7 +47,7 @@ class PackageController extends Controller
             ->insert([
                 'user_id' => Auth::user()->id,
                 'package_id' => $id,
-                'status' => 1,
+                'status' => 0,
 
             ]);
             DB::table('package_user')

@@ -4,33 +4,30 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use DB;
 use Auth;
-class PersonalController extends Controller
+use DB;
+class ThankyouPageController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        if(!Auth::user()->is_admin)
-        {
-            $data = DB::table('user_login')
-            ->join('package_user','user_login.id','=','package_user.user_id')
-            ->join('package','package_user.package_id','=','package.id')
-            ->where('user_login.id',Auth::user()->id)
-            ->first();
-        }
-        else
-        {
-            $data = DB::table('user_login')
-            ->where('user_login.id',Auth::user()->id)
-            ->first(); 
-        }
-       
-        return view('Frontend.personal')
+        $data = DB::table('category_sale')
+        ->where('id',$id)
+        ->first();
+        $image = DB::table('thankyou_page')
+        ->where('category_sale_id',$id)
+        ->orderBy('sort','asc')
+        ->get();
+
+        
+
+        return view('Frontend.thankyou-page')
+        ->with('image',$image)
+        ->with('id',$id)
         ->with('data',$data);
     }
 
@@ -50,9 +47,44 @@ class PersonalController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function storeImage(Request $request,$id)
     {
-        //
+        $request->validate([
+            'image'=>'required',
+        ]);
+
+        $image = $request->file('image');
+        $imageName = time().rand().$image->getClientOriginalName();
+
+        $image->move('images/sales_page_image',$imageName);
+        $max_sort = DB::table('thankyou_page')
+        ->where('category_sale_id',$id)
+        ->max('sort');
+
+        if($max_sort)
+        {
+            DB::table('thankyou_page')
+            ->insert([
+                'category_sale_id' => $id,
+                'content_type' => 'image',
+                'content' => $imageName,
+                'sort' => $max_sort+1,
+            ]);
+        }
+        else
+        {
+            DB::table('thankyou_page')
+            ->insert([
+                'category_sale_id' => $id,
+                'content_type' => 'image',
+                'content' => $imageName,
+                'sort' => 1,
+            ]);
+        }
+
+
+
+        return redirect()->back();
     }
 
     /**
@@ -86,26 +118,7 @@ class PersonalController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
-        DB::table('user_login')
-        ->where('id',$id)
-        ->update([
-            'name_lastname' => $request->txt_page_name,
-            'phone_number' => $request->txt_page_phone,
-        ]);
-
-        if($request->profile)
-        {
-            $image = $request->profile;
-            $imageName = time().rand().$image->getClientOriginalName();
-            $image->move('assets/images/profile',$imageName);
-            DB::table('user_login')
-            ->where('id',$id)
-            ->update([
-                'image' => $imageName,
-            ]);
-        }
-        return redirect()->back();
+        //
     }
 
     /**

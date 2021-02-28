@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('salepage/{id}','Backend\SalepageController@show')->name('salepage.show');
+Route::get('thank-you/{id}','Backend\ThankyouPageController@index')->name('thankyou.index');
+
 Route::post('salepage/{id}/storeOrder','Frontend\OrderController@store')->name('order.store');
 Route::group(['namespace' => 'Frontend'],function(){
 
@@ -39,6 +41,8 @@ Route::group(['middleware' => 'auth','prefix' => 'webpanel'],function(){
     Route::post('created_salepage/{id}/update','Backend\SalepageController@update')->name('salepage.update');
     Route::get('created_salepage/{id}/destroy','Backend\SalepageController@destroy')->name('salepage.destroy');
 
+    Route::post('main_salepage/show/reorder','Backend\SalepageController@reorder')->name('salepage.reorder');
+
     Route::get('package_show','Backend\PackageController@index')->name('package.index');
 
     Route::post('product/{id}/store','Backend\ProductController@store')->name('product.store');
@@ -46,6 +50,12 @@ Route::group(['middleware' => 'auth','prefix' => 'webpanel'],function(){
     Route::post('banking/{id}/store','Backend\BankController@store')->name('bank.store');
 
     Route::post('express/{id}/store','Backend\ExpressController@store')->name('express.store');
+
+    Route::post('timer/{id}/store','Backend\TimerController@store')->name('timer.store');
+
+    Route::post('social_button/{id}/store','Backend\SocialButtonController@store')->name('social_button.store');
+
+    Route::post('thankyou/{id}/storeImage','Backend\ThankyouPageController@storeImage')->name('thankyou.storeImage');
 
 
     Route::get('package_confirm/{id}','Backend\PackageController@confirm')->name('package.confirm');
@@ -67,5 +77,9 @@ Route::group(['middleware' => 'auth','prefix' => 'webpanel'],function(){
     Route::Get('payment','Backend\PaymentController@index')->name('payment.index');
 
     Route::Get('change-password','Backend\PasswordResetController@index')->name('password.change');
+
+
+    Route::get('order_admin','Backend\PackageAdminController@index')->name('package_admin.index');
+    Route::get('ordermain_approve/{id}/show','Backend\PackageAdminController@show')->name('package_admin.show');
 
 });

@@ -22,15 +22,24 @@ class RedirectIfAuthenticated
             $checkPackage = \DB::table('package_user')
             ->where('user_id',\Auth::user()->id)
             ->first();
-            if($checkPackage)
+            
+            if(!\Auth::user()->is_admin)
             {
-                return redirect()->route('salepage.index');
+                if($checkPackage)
+                {
+                    return redirect()->route('salepage.index');
+                }
+                else
+                {
+                    return redirect()->route('package.index');
+                }
             }
             else
             {
-                return redirect()->route('package.index');
+        
+                return redirect()->route('salepage.index');
             }
-            return redirect()->route('salepage.index');
+            // return redirect()->route('salepage.index');
         }
 
         return $next($request);

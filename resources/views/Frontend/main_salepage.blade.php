@@ -20,8 +20,10 @@ $app = new Image;
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <link rel="stylesheet" href="css/switch.css">
+    <link rel="stylesheet" href="/public/assets/css/flipclock.css">
+    <link rel="stylesheet" href="/public/assets/css/jquery.datetimepicker.css">
 
-
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Kanit', sans-serif;
@@ -81,6 +83,13 @@ $app = new Image;
             max-width: 100%;
             height : auto;
         }
+        .content-limit {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* number of lines to show */
+            -webkit-box-orient: vertical;
+            }
     </style>
 
 </head>
@@ -158,26 +167,27 @@ $app = new Image;
                                     </thead>
                                     <tbody>
                                         @foreach($image as $im)
-                                        <tr class="text-center">
+                                        <tr class="text-center row1" data-id="{{$im->id}}">
                                             <td>
-                                                <select name="content_sort" id="content_sort">
-                                                    <option selected="selected">
-                                                        {{$im->sort}}
-                                                        </option>
-                                                    @foreach($image as $im2)
-                                                        <option value="{{$loop->iteration}}">{{$im2->sort}}</option>
-                                                    @endforeach
-                                                  </select>
+                                               <a href="javascript:void(0);" class="up"><i class="icon-arrow-up"></i></a>
+                                               <a href="javascript:void(0);" class="down"><i class="icon-arrow-down"></i></a>
                                             </td>
                                             <td><a href="#"></a>{{$im->content_type}}</td>
-                                            <td>
+                                            <td style="width:20%;">
                                                 @if($im->content_type == 'image')
-                                                <img src="/public/images/sales_page_image/{{$im->content}}" width="20%">
-                                                @elseif($im->content_type == 'content')
-                                                <div class="image-editor">{!!$im->content!!}</div>
+                                                    <img src="/public/images/sales_page_image/{{$im->content}}" width="100%" heigh="auto">
+                                                    @elseif($im->content_type == 'content')
+                                                    <div class="content-limit">{!!$im->content!!}</div>
+                                                    @elseif($im->content_type == 'video')
+                                                    <div class="embed-responsive embed-responsive-16by9">
+                                                        <iframe class="embed-responsive-item" src="{{$im->content}}" allowfullscreen></iframe>
+                                                    </div>
+                                                    @elseif($im->content_type == 'ตัวนับถอยหลัง')
+                                                        <div>N/A</div>
                                                 @endif
                                             </td>
-                                            <td>
+                                            <td class="text-center">
+                                                
                                                 <form action="{{route('image.destroy',$im->id)}}" method="post">
                                                     @csrf
                                                     <button class="btn btn-danger">ลบ</button>
@@ -365,21 +375,25 @@ $app = new Image;
                                             <div class="card-body">
                                                 <p class="mb-3"></p>
                                                 <h3>เพิ่มปุ่มติดต่อสอบถาม</h3>
-                                                <div class="mb-2">
-                                                    <select class="browser-default custom-select" id="txtButtonType">
-                                                        <option selected value="no">เลือกช่องทางการติดต่อ</option>
-                                                        <option value="no">Line</option>
-                                                        <option value="no">Facebook</option>
-                                                        <option value="no">Phone Number</option>
-                                                    </select>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <input class="form-control" type="text" placeholder="กรอกลิ๊งค์ปลายทางหรือเบอร์ติดต่อ" id="txtContactLink">
-                                                </div>
-                                                <button type="button" class="btn btn-primary" id="btnSaveContactButton">
-                                                    <i class="fas fa-save"></i>
-                                                    บันทึกปุ่มติดต่อ
-                                                </button>
+                                                <form action="{{route('social_button.store',$id)}}" method="post">
+                                                    @csrf
+                                                    <div class="mb-2">
+                                                        <select class="browser-default custom-select" name="button" id="txtButtonType" required>
+                                                            <option selected value="">เลือกช่องทางการติดต่อ</option>
+                                                            <option value="line">Line</option>
+                                                            <option value="facebook">Facebook</option>
+                                                            <option value="phone">Phone Number</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-2">
+                                                        <input class="form-control" type="text" name="content" placeholder="กรอกลิ๊งค์ปลายทางหรือเบอร์ติดต่อ" id="txtContactLink">
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary" id="btnSaveContactButton">
+                                                        <i class="fas fa-save"></i>
+                                                        บันทึกปุ่มติดต่อ
+                                                    </button>
+                                                </form>
+                                              
                                                 <p class="mb-0">&nbsp;</p>
                                             </div>
                                         </div>
@@ -399,94 +413,17 @@ $app = new Image;
                                             <div class="card-body">
                                                 <p class="mb-3"></p>
                                                 <h3>ตั้งค่าเวลาสิ้นสุดโปรโมชั่น</h3>
-                                                <div class="row">
-                                                    <div class="mb-2 col-6">
-                                                        <input class="form-control hasDatepicker" type="text" placeholder="เลือกวันที่" id="txtCountDown">
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <select class="form-control" name="txtTimeList" id="txtTimeList">
-                                                            <option value="00:00" selected>
-                                                                เลือกเวลา
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                00:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                01:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                02:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                03:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                04:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                05:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                06:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                07:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                08:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                09:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                10:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                11:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                12:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                13:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                14:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                15:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                16:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                17:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                18:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                19:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                20:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                21:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                22:00
-                                                            </option>
-                                                            <option value="00:00" selected>
-                                                                23:00
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <button type="button" class="btn btn-primary" id="btnSaveCountDown">
+                                                <form action="{{route('timer.store',$id)}}" method="post">
+                                                    @csrf
+                                                   
+                                                          <input type="text" name="timer" id="datetimepicker">
+                                                       
+                                                <button  class="btn btn-primary" id="btnSaveCountDown">
                                                     <i class="fas fa-save"></i>
                                                     บันทึกเวลา
                                                 </button>
+                                                </form>
+                                                    
                                                 <p class="mb-0">&nbsp;</p>
                                             </div>
                                         </div>
@@ -540,7 +477,7 @@ $app = new Image;
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header center">
-                                    <h1>จัดการหน้าเพจหลัก</h1>
+                                    <h1>จัดการหน้า THANK YOU PAGE</h1>
                                 </div>
                                 <table class="table table-striped">
                                     <thead class="thead-dark">
@@ -579,35 +516,24 @@ $app = new Image;
                                                 <h3>เพิ่มรูปภาพ</h3>
                                                 <div class="mb-2 input-group_RemoveThis">
                                                     <div class="custom-file">
-                                                    <form action="process.php" method="post" enctype="multipart/form-data">
-                                                        Image: <input required type="file" name="image" id="image" accept="image/*"><br>
-                                                        <button type="submit" class="default" name="upload">Submit</button>
-                                                        <button type="button" class="cancel" onClick="javascript:window.location.href='./'">Cancel</button>
-                                                    </form>
-                                                        <!-- <form name="process.php" method="post" enctype="multipart/form-data">
-                                                            <input type="hidden" id="txtSelectImageType" name="txtSelectImageType" value="img">
-                                                            <div class="input-group">
-                                                                <input type="text" class="form-control" id="txt_file_name" readonly>
-                                                                <label class="input-group-btn custom-file-input">
-                                                                    <span class="btn btn-info custom-file-label" id="imgUpload" onClick="javascript:window.location.href='?upload'">
-                                                                        Browse...
-                                                                        <input class="submit" type="file" id="upload" name="upload" style="display: none;" multiple>
-                                                                    </span>
-                                                                </label>
-                                                            </div>
-                                                            <input type="hidden" id="page_id" name="page_id" value="5523">
-                                                        </form> -->
+                                                   <form action="{{route('thankyou.storeImage',$id)}}" method="post" enctype="multipart/form-data">
+                                                    @csrf
+                                                    Image: <input required type="file" name="image" id="image" accept="image/*"><br>
+                                                    <button type="submit" class="btn btn-primary" id="btnSaveImage">
+                                                        <i class="fas fa-save">
+                                                        </i>
+                                                        บันทึกรูปภาพ
+                                                    </button>
+                                                   </form>
+                                                   
+                                                        
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <label class="mb-3 mt-2">ขนาดความกว้างรูปภาพที่เหมาะสมคือ
                                                         1200px</label>
                                                 </div>
-                                                <button type="button" class="btn btn-primary" id="btnSaveImage">
-                                                    <i class="fas fa-save">
-                                                    </i>
-                                                    บันทึกรูปภาพ
-                                                </button>
+                                                
                                                 <p class="mb-0">&nbsp;</p>
                                             </div>
                                         </div>
@@ -780,7 +706,7 @@ $app = new Image;
                                                 <input type="hidden" id="method" name="method" value="">
                                                 <div class="row">
                                                     <div class="col-2">
-                                                        <div class="toggle-btn" data-id="1" >
+                                                        <div class="toggle-btn" data-id="1"  >
                                                             <div class="inner-circle"></div>
                                                         </div>
                                                     </div>
@@ -1198,6 +1124,11 @@ $app = new Image;
                 <div class="embed-responsive embed-responsive-16by9">
                     <iframe class="embed-responsive-item" src="{{$im->content}}" allowfullscreen></iframe>
                   </div>
+                @elseif($im->content_type == 'ตัวนับถอยหลัง')
+                <input type="hidden" id="time_countdown" value="{{Carbon\Carbon::now()->diffInSeconds($im->content)}}">
+                <div class="clock d-flex justify-content-center"></div>
+                @elseif($im->content_type == 'facebook')
+                <div><a class="btn btn-primary" href="{{$im->content}}" target="_blank">facebook</a></div>
                 @endif
               @endforeach
               
@@ -1211,11 +1142,11 @@ $app = new Image;
             <h1 class="text-center">สั่งซื้อสินค้า</h1>
                 <hr>
                 @foreach($product as $pd)
-                <div class="card mb-2">
+                <div class="card mb-2 product_section">
                     <div class="row">
                         <div class="col-6">
                             <div class="form-check my-2 mx-2">
-                                <input class="form-check-input product_checkbox" data-price="{{$pd->price}}" name="product_checkbox[]" type="checkbox" value="{{$pd->id}}" id="flexCheckDefault">
+                                <input class="form-check-input product_checkbox" data-price="{{$pd->price}}" name="product_checkbox" type="checkbox" value="{{$pd->id}}" id="flexCheckDefault">
                                 
                             </div>
                         </div>
@@ -1229,7 +1160,7 @@ $app = new Image;
                         </div>
                         <div class="col-6">
                             <div class="form-group my-2 mx-2">
-                                <input type="number" value="1"  class="form-control product_count" >
+                                <input type="number" value="1" name="product_count"  class="form-control product_count" >
                             </div>
                         </div>
                     </div>
@@ -1353,61 +1284,181 @@ $app = new Image;
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+    <script src="/public/assets/js/flipclock.min.js"></script>
+    <script src="/public/assets/js/jquery.datetimepicker.full.js"></script>
+    
 </body>
 
 </html>
 
+
+
+    <script>
+    $(document).ready(function(){
+        $(".up,.down,.top,.bottom").click(function(){
+            var row = $(this).parents("tr:first");
+            if ($(this).is(".up")) {
+                row.insertBefore(row.prev());
+            } else if ($(this).is(".down")) {
+                row.insertAfter(row.next());
+            } else if ($(this).is(".top")) {
+                //row.insertAfter($("table tr:first"));
+                row.insertBefore($("table tr:first"));
+            }else {
+                row.insertAfter($("table tr:last"));
+            }
+            sendOrderToServer();
+        });
+        
+        function sendOrderToServer() {
+          var order = [];
+          let id = "{{$id}}";
+          $('tr.row1').each(function(index,element) {
+            order.push({
+              id: $(this).attr('data-id'),
+              position: index+1
+            });
+          });
+          console.log(order);
+          $.ajax({
+            type: "POST", 
+            dataType: "json", 
+            url: "{{ route('salepage.reorder') }}",
+                data: {
+              order: order,
+              id:id,
+              _token: "{{csrf_token()}}"
+            },
+            success: function(response) {
+                if (response.status == "success") {
+                  console.log(response);
+                } else {
+                  console.log(response);
+                }
+            }
+          });
+        }
+    });
+    </script>
 <script>
-    let sumprice = 0;
+    $(document).ready(function(){
+        var check = {!!json_encode($image)!!}
+    $.each(check, function(i) {
+    if(check[i].content_type == 'ตัวนับถอยหลัง')
+    {
+        var clock = $('.clock').FlipClock({ 
+        clockFace: 'DailyCounter',
+        autoStart: false,
+        callbacks: {
+        stop: function() {
+            $('.message').html('The clock has stopped!')
+        }
+        }
+        }); 
+        let timer_time = parseInt($('#time_countdown').val());
+        // set time
+        clock.setTime(timer_time);
+
+        // countdown mode
+        clock.setCountdown(true);
+
+        // start the clock
+        clock.start();
+    }
+    });
+    })
+    
+</script>
+<script>
+    $('#datetimepicker').datetimepicker({
+        inline:true,
+    });
+
+   
+
+</script>
+<script>
     $(document).on('click','.product_checkbox',function(){
-            var sum = [];
-            let test = $(this).closest('.row');
-            
-
-            console.log(test);
-
-            // $.each($("input[name='product_checkbox']:checked"), function(){
-            //     sum.push($(this).data('price'));
-            //     $('#sum_price').html(sumprice);
-            //     $('#product_price').html(sumprice);
-            // });
-            // alert("My favourite sports are: " + sum.join(", ")); 
-        if($(this).is(':checked'))
-        {
-            price = $(this).data('price');
-            sumprice = parseInt(sumprice)+parseInt(price);
-            $('#sum_price').html(sumprice);
-            $('#product_price').html(sumprice);
-        }
-        else
-        {
-            price = $(this).data('price');
-            sumprice = parseInt(sumprice)-parseInt(price);
-            $('#sum_price').html(sumprice);
-            $('#product_price').html(sumprice);
-        }
-        $('#summary_price').val(sumprice);
+        var array = [];
+        let sum = 0;
+        $('.product_section  input:checked').each(function(index,element) {
+            let count = $(this).closest('.card').find('.product_count').val();
+            array.push({
+                price : $(this).data('price'),
+                count : count,
+            });
+           
+          });
+          array.forEach(function(number) {
+            sum+= number.price*number.count;
+            });
+            $('#sum_price').html(sum);
+            $('#product_price').html(sum);
       
+      
+    })
+    $(document).on('keyup','.product_count',function(){
+        var array = [];
+        let sum = 0;
+        $('.product_section  input:checked').each(function(index,element) {
+            let count = $(this).closest('.card').find('.product_count').val();
+            array.push({
+                price : $(this).data('price'),
+                count : count,
+            });
+           
+          });
+          array.forEach(function(number) {
+            sum+= number.price*number.count;
+            });
+            $('#sum_price').html(sum);
+            $('#product_price').html(sum);
     })
 </script>
 
 <script>
+    $(document).ready(function(){
+        var express_id = {!! json_encode($express) !!};
+        $('.toggle-btn[data-id="'+express_id.method+'"]').addClass('active');
+    });
     $(document).on('click','.toggle-btn',function(){
+        $('.toggle-btn').removeClass('active');
+
         let method = $(this).data('id');
         $('#method').val(method);
         this.classList.toggle('active');
     })
+
 </script>
 
 <script>
     $(document).on('click','.method',function(){
+
         if($(this).val() == 1)
         {
             $('.banking').show();
+            let product_price = $('#product_price').text();
+
+            product_price = parseInt(product_price);
+
+            $('#express_price').html(0);
+
+            $('#sum_price').html(product_price)
+            
         }
         else
         {
+            var express = {!! json_encode($express) !!};
+            let product_price = $('#product_price').text();
+
+            product_price = parseInt(product_price);
+
+            $('#express_price').html(express.COD);
+            let sum_price = product_price + parseInt(express.COD);
+
+            $('#sum_price').html(sum_price)
+            // express_price
+            // sum_price
             $('.banking').hide();
         }
     })

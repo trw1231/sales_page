@@ -35,6 +35,10 @@ class ExpressController extends Controller
      */
     public function store(Request $request,$id)
     {
+        $exist = DB::table('category_sale_express')
+        ->where('category_sale_id',$id)
+        ->delete();
+        
         if($request->method == 1)
         {
             DB::table('category_sale_express')

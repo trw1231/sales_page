@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use DB;
-use Auth;
-class PersonalController extends Controller
+class TimerController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,23 +15,7 @@ class PersonalController extends Controller
      */
     public function index()
     {
-        if(!Auth::user()->is_admin)
-        {
-            $data = DB::table('user_login')
-            ->join('package_user','user_login.id','=','package_user.user_id')
-            ->join('package','package_user.package_id','=','package.id')
-            ->where('user_login.id',Auth::user()->id)
-            ->first();
-        }
-        else
-        {
-            $data = DB::table('user_login')
-            ->where('user_login.id',Auth::user()->id)
-            ->first(); 
-        }
-       
-        return view('Frontend.personal')
-        ->with('data',$data);
+        //
     }
 
     /**
@@ -50,9 +34,19 @@ class PersonalController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request,$id)
     {
-        //
+        
+        DB::table('images')
+        ->insert(
+            [
+                'category_sale_id'=>$id,
+                'content_type' => 'ตัวนับถอยหลัง',
+                'content' => Carbon::parse($request->timer),
+            ]
+           
+            );
+            return redirect()->back();
     }
 
     /**
@@ -86,26 +80,7 @@ class PersonalController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
-        DB::table('user_login')
-        ->where('id',$id)
-        ->update([
-            'name_lastname' => $request->txt_page_name,
-            'phone_number' => $request->txt_page_phone,
-        ]);
-
-        if($request->profile)
-        {
-            $image = $request->profile;
-            $imageName = time().rand().$image->getClientOriginalName();
-            $image->move('assets/images/profile',$imageName);
-            DB::table('user_login')
-            ->where('id',$id)
-            ->update([
-                'image' => $imageName,
-            ]);
-        }
-        return redirect()->back();
+        //
     }
 
     /**

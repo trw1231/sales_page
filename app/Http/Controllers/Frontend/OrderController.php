@@ -75,7 +75,7 @@ class OrderController extends Controller
             ]);
         }
 
-        return redirect()->back();
+        return redirect()->route('thankyou.index',$id);
         
 
     }

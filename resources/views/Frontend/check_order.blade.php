@@ -28,10 +28,16 @@
     <input type="checkbox" id="menu">
 
     <nav>
-        <label class="head">Created</label>
+        <label class="head">Sale Page</label>
 
         <ul>
-            <li><a href="home.php" style="text-decoration: none;">Logout</a></li>
+            <li>
+                <form action="{{route('logout')}}" method="post">
+                    @csrf
+                    <button class="btn btn-primary">Logout</button>
+                </form>
+               
+            </li>
         </ul>
 
         <label for="menu" class="menu-bar">
