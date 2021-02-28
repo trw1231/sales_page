@@ -38,7 +38,6 @@ class OrderController extends Controller
     {
        
         
-        
         DB::table('product_transaction')
         ->insert([
             'category_sale_id' => $id,

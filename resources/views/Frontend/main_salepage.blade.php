@@ -1146,7 +1146,7 @@ $app = new Image;
                     <div class="row">
                         <div class="col-6">
                             <div class="form-check my-2 mx-2">
-                                <input class="form-check-input product_checkbox" data-price="{{$pd->price}}" name="product_checkbox" type="checkbox" value="{{$pd->id}}" id="flexCheckDefault">
+                                <input class="form-check-input product_checkbox" data-price="{{$pd->price}}" name="product_checkbox[]" type="checkbox" value="{{$pd->id}}" id="flexCheckDefault">
                                 
                             </div>
                         </div>
@@ -1394,6 +1394,8 @@ $app = new Image;
             });
             $('#sum_price').html(sum);
             $('#product_price').html(sum);
+
+            $('#summary_price').val(sum);
       
       
     })
@@ -1413,6 +1415,8 @@ $app = new Image;
             });
             $('#sum_price').html(sum);
             $('#product_price').html(sum);
+            
+            $('#summary_price').val(sum);
     })
 </script>
 
